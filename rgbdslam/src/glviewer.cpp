@@ -607,10 +607,27 @@ void GLViewer::addFeatures(const std::vector<Eigen::Vector4f, Eigen::aligned_all
 }
 
 //Add by jialn GLViewer::
+
 float glv_squaredEuclideanDistance(point_type u, point_type v) {
 
 return (u.x-v.x)*(u.x-v.x)+(u.y-v.y)*(u.y-v.y)+(u.z-v.z)*(u.z-v.z);
 }
+
+/*
+template<typename PointType1, typename PointType2> inline float
+glv_squaredEuclideanDistance (const PointType1& p1, const PointType2& p2)
+{
+ float diff_x = p2.x - p1.x, diff_y = p2.y - p1.y, diff_z = p2.z - p1.z;
+ return (diff_x*diff_x + diff_y*diff_y + diff_z*diff_z);
+}
+
+template<> inline float
+glv_squaredEuclideanDistance (const PointXY& p1, const PointXY& p2)
+{
+ float diff_x = p2.x - p1.x, diff_y = p2.y - p1.y;
+ return (diff_x*diff_x + diff_y*diff_y);
+}
+*/
 
 void GLViewer::pointCloud2GLStrip(pointcloud_type * pc){
     ScopedTimer s(__FUNCTION__);

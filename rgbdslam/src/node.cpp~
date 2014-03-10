@@ -164,9 +164,9 @@ Node::Node(const cv::Mat visual,
   filtered_pc_col(new pointcloud_type()),
 #endif
   flannIndex(NULL),
-  base2points_(tf::Transform::getIdentity(), ros::Time::Time(0,point_cloud->header.stamp),ParameterServer::instance()->get<std::string>("base_frame_name"), point_cloud->header.frame_id),
-  ground_truth_transform_(tf::Transform::getIdentity(), ros::Time::Time(0,point_cloud->header.stamp), ParameterServer::instance()->get<std::string>("ground_truth_frame_name"), ParameterServer::instance()->get<std::string>("base_frame_name")),
-  odom_transform_(tf::Transform::getIdentity(), ros::Time::Time(0,point_cloud->header.stamp), "missing_odometry", point_cloud->header.frame_id),
+  base2points_(tf::Transform::getIdentity(), pcl_conversions::fromPCL(point_cloud->header).stamp/*ros::Time(0,point_cloud->header.stamp)*/,ParameterServer::instance()->get<std::string>("base_frame_name"), point_cloud->header.frame_id),
+  ground_truth_transform_(tf::Transform::getIdentity(), ros::Time(0,point_cloud->header.stamp), ParameterServer::instance()->get<std::string>("ground_truth_frame_name"), ParameterServer::instance()->get<std::string>("base_frame_name")),
+  odom_transform_(tf::Transform::getIdentity(), ros::Time(0,point_cloud->header.stamp), "missing_odometry", point_cloud->header.frame_id),
   initial_node_matches_(0)
 {
   //cv::namedWindow("matches");

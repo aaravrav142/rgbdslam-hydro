@@ -107,7 +107,6 @@ float misc_squaredEuclideanDistance(point_type u, point_type v) {
 
 return (u.x-v.x)*(u.x-v.x)+(u.y-v.y)*(u.y-v.y)+(u.z-v.z)*(u.z-v.z);
 }
-
 void transformAndAppendPointCloud (const pointcloud_type &cloud_in, 
                                    pointcloud_type &cloud_to_append_to,
                                    const tf::Transform transformation, float max_Depth)

@@ -36,6 +36,7 @@
 #include "g2o/types/slam3d/edge_se3.h"
 #include "g2o/core/optimizable_graph.h"
 
+#include <pcl_conversions/pcl_conversions.h>
 #include <pcl_ros/point_cloud.h>
 
 // If QT Concurrent is available, run the saving in a seperate thread
@@ -539,7 +540,8 @@ void GraphManager::saveTrajectory(QString filebasename, bool with_ground_truth)
       tf::StampedTransform base2points = node->getBase2PointsTransform();//get pose of base w.r.t current pc at capture time
       tf::Transform world2base = init_base_pose_*base2points*pose*base2points.inverse();
 
-      logTransform(et_out, world2base, node->pc_col->header.stamp);//.toSec()
+      //logTransform(et_out, world2base, node->pc_col->header.stamp);//.toSec()
+      logTransform(et_out, world2base, pcl_conversions::fromPCL(node->pc_col->header).stamp.toSec());
       //Eigen::Matrix<double, 6,6> uncertainty = v->uncertainty();
       //et_out << uncertainty(0,0) << "\t" << uncertainty(1,1) << "\t" << uncertainty(2,2) << "\t" << uncertainty(3,3) << "\t" << uncertainty(4,4) << "\t" << uncertainty(5,5) <<"\n" ;
       if(with_ground_truth && !gt.empty()){
@@ -877,13 +879,26 @@ void GraphManager::broadcastTransform(Node* node, tf::Transform& computed_motion
 */
 
 ///Send node's pointcloud with given publisher and timestamp
+/*
 void publishCloud(Node* node, ros::Time timestamp, ros::Publisher pub){
   ros::Time stamp(0,node->pc_col->header.stamp); //temp storage
   node->pc_col->header.stamp = timestamp.toNSec(); //to sync with tf
   pub.publish(node->pc_col);
   node->pc_col->header.stamp = stamp.toNSec(); //restore original stamp (to minimize unexpected side-effects of this function)
   ROS_INFO("Pointcloud with id %i sent with frame %s", node->id_, node->pc_col->header.frame_id.c_str());
+}*/
+
+void publishCloud(Node* node, ros::Time timestamp, ros::Publisher pub){
+  uint64_t stamp = node->pc_col->header.stamp; //temp storage
+
+  sensor_msgs::PointCloud2 pc_msg;
+  pc_msg.header.stamp = timestamp;
+  node->pc_col->header.stamp = pcl_conversions::toPCL(pc_msg.header).stamp; //to sync with tf
+  pub.publish(node->pc_col);
+  node->pc_col->header.stamp = stamp; //restore original stamp (to minimize unexpected side-effects of this function)
+  ROS_INFO("Pointcloud with id %i sent with frame %s", node->id_, node->pc_col->header.frame_id.c_str());
 }
+
 
 void GraphManager::drawFeatureFlow(cv::Mat& canvas, cv::Scalar line_color,
                                    cv::Scalar circle_color)
