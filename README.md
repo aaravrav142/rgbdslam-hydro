@@ -8,7 +8,42 @@ To compile this you need add the header file OctomapROS.h to the folder:
 file OctomapROS.h can be download from: 
 http://docs.ros.org/fuerte/api/octomap_ros/html/OctomapROS_8h_source.html
 
+#############################################################################
+Quick Start:
 
+##########  Check out codes  #############
+$ cd ~/catkin_ws/src
+$ git clone {this page link}
+
+###########  Install dependencies  #########
+$ apt-get install ros-hydro-libg2o
+$ apt-get install ros-hydro-octomap ros-hydro-octomap-mapping ros-hydro-octomap-msgs ros-hydro-octomap-ros ros-hydro-octomap-rviz-plugins ros-hydro-octomap-server 
+
+You also need add a deprecated header file OctomapROS.h to the folder:  /opt/ros/hydro/include/octomap_ros/
+which can be download from: 
+http://alufr-ros-pkg.googlecode.com/svn/branches/octomap_stacks-groovy-devel/octomap_ros/include/octomap_ros/OctomapROS.h
+
+###########             Compile         ############
+$ cd ~/catkin_ws
+$ catkin_make
+$ rosmake –pre-clean rgbdslam
+
+#########    Install drivers for Kinect     #########
+$ sudo apt-get install ros-hydro-libfreenect
+
+###########      Run RGB-D SLAM     ###########
+you might need to change the listening topic accroding to your drivers. if it is libfreenect:
+$ roslaunch freenect_launch slam_freenect.launch
+$ roslaunch rgbdslam optimized.launch
+
+if you use openni, run with:
+$ roslaunch rgbdslam kinect+rgbdslam.launch
+Alternatively you can start the openni nodes and RGBDSLAM separately, e.g.:
+$ roslaunch openni_launch openni.launch 
+$ rosrun rgbdslam rgbdslam
+
+
+#############################################################################
 Additional information can be found here:
 http://www.ros.org/wiki/rgbdslam
 
